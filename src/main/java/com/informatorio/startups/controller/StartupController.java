@@ -22,8 +22,10 @@ public class StartupController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllStartups(@RequestParam(required = false) Boolean published){
-        return new ResponseEntity(startupService.getStartupsByPublishedStatus(published), HttpStatus.OK);
+    public ResponseEntity<?> getAllStartups(
+            @RequestParam(required = false) Boolean published,
+            @RequestParam(required = false) String tag){
+        return new ResponseEntity(startupService.getStartupsBy(published,tag), HttpStatus.OK);
     }
 
     @PostMapping

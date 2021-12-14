@@ -2,28 +2,42 @@ package com.informatorio.startups.service;
 
 import com.informatorio.startups.dto.StartupOperation;
 import com.informatorio.startups.entity.Startup;
+import com.informatorio.startups.entity.Tag;
 import com.informatorio.startups.entity.User;
 import com.informatorio.startups.exception.DuplicateEntryException;
 import com.informatorio.startups.repository.StartupRepository;
+import com.informatorio.startups.repository.TagRepository;
 import com.informatorio.startups.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class StartupService {
     private final StartupRepository startupRepository;
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
 
-    public StartupService(StartupRepository startupRepository, UserRepository userRepository) {
+    public StartupService(StartupRepository startupRepository, UserRepository userRepository,
+                          TagRepository tagRepository) {
         this.startupRepository = startupRepository;
         this.userRepository = userRepository;
+        this.tagRepository = tagRepository;
     }
 
-    public List<Startup> getStartupsByPublishedStatus (Boolean published){
+    public List<Startup> getStartupsBy(Boolean published, String tag){
         if (published != null){
             return startupRepository.findByPublished(published);
+        }
+        if (tag != null && !tag.isBlank()){
+            List<Tag> tags = tagRepository.findByNameContaining(tag);
+            List<Startup> startups = new ArrayList<>();
+            for (Tag t: tags) {
+                startups = startupRepository.findByTags_Id(t.getId());
+            }
+            return startups;
         }
         return startupRepository.findAll();
     }
@@ -48,6 +62,9 @@ public class StartupService {
             startup.setBody(startupOperation.getBody());
             startup.setGoal(startupOperation.getGoal());
             startup.setPublished(startupOperation.getPublished());
+            startupOperation.getTags().stream()
+                    .filter(tag -> tag.getName() != null && !tag.getName().isBlank())
+                    .forEach(startup::addTag);
             startupOperation.getImagesUrl().stream()
                     .filter(img -> img.getUrl() != null && !img.getUrl().isBlank())
                     .forEach(startup::addImageUrl);

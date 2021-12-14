@@ -25,6 +25,8 @@ public class Startup {
     private User owner;
     @OneToMany(mappedBy = "startup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageUrl> imageUrls = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Tag> tags = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -38,6 +40,7 @@ public class Startup {
                 ", published=" + published +
                 ", owner=" + owner +
                 ", imageUrls=" + imageUrls +
+                ", tags=" + tags +
                 '}';
     }
 
@@ -115,7 +118,16 @@ public class Startup {
         return imageUrls;
     }
 
-    public void setImageUrls(List<ImageUrl> imageUrls) {
-        this.imageUrls = imageUrls;
+    public void addTag(Tag tag){
+        tags.add(tag);
+        tag.getStartupList().add(this);
+    }
+
+    public void removeTag(Tag tag){
+        tags.remove(tag);
+    }
+
+    public List<Tag> getTags() {
+        return tags;
     }
 }

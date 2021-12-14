@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface StartupRepository extends JpaRepository<Startup, Long> {
     public List<Startup> findByPublished(Boolean num);
+    public List<Startup> findByTags_Id(Long id);
 }

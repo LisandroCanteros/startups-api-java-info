@@ -2,6 +2,7 @@ package com.informatorio.startups.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.informatorio.startups.entity.ImageUrl;
+import com.informatorio.startups.entity.Tag;
 
 import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
@@ -31,6 +32,7 @@ public class StartupOperation {
     private Long idOwner;
     @JsonProperty(value = "images_url")
     private List<ImageUrl> imagesUrl = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
     public String getBody() {
         return body;
@@ -78,5 +80,9 @@ public class StartupOperation {
 
     public List<ImageUrl> getImagesUrl() {
         return imagesUrl;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
     }
 }
