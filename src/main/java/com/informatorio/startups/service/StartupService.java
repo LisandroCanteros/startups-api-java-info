@@ -48,6 +48,9 @@ public class StartupService {
             startup.setBody(startupOperation.getBody());
             startup.setGoal(startupOperation.getGoal());
             startup.setPublished(startupOperation.getPublished());
+            startupOperation.getImagesUrl().stream()
+                    .filter(img -> img.getUrl() != null && !img.getUrl().isBlank())
+                    .forEach(startup::addImageUrl);
             return startup;
         }
         throw new DuplicateEntryException("This user already has a startup called "

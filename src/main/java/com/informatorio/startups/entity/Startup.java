@@ -6,18 +6,17 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Startup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Name cannot be null or empty.")
     private String name;
-    @NotBlank(message = "Description cannot be null or empty.")
     private String description;
     @Lob
-    @NotBlank(message = "Body cannot be null or empty.")
     private String body;
     @CreationTimestamp
     private LocalDateTime creationDate;
@@ -25,6 +24,8 @@ public class Startup {
     private Boolean published;
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
+    @OneToMany(mappedBy = "startup", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageUrl> imageUrls = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -36,7 +37,13 @@ public class Startup {
                 ", creationDate=" + creationDate +
                 ", goal=" + goal +
                 ", published=" + published +
+                ", owner=" + owner +
+                ", imageUrls=" + imageUrls +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -93,5 +100,23 @@ public class Startup {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public void addImageUrl(ImageUrl imageUrl){
+        imageUrls.add(imageUrl);
+        imageUrl.setStartup(this);
+    }
+
+    public void removeImageUrl(ImageUrl imageUrl){
+        imageUrls.remove(imageUrl);
+        imageUrl.setStartup(null);
+    }
+
+    public List<ImageUrl> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List<ImageUrl> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 }
