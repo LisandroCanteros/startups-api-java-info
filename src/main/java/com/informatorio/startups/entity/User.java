@@ -21,6 +21,7 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
     private UserType userType;
     @CreationTimestamp
     private LocalDateTime creationDate;
@@ -33,6 +34,8 @@ public class User {
     private City city;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Startup> startups = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<Vote> votes = new ArrayList<>();
 
     @Override
     public String toString() {

@@ -32,7 +32,7 @@ public class StartupService {
             return startupRepository.findByPublished(published);
         }
         if (tag != null && !tag.isBlank()){
-            List<Tag> tags = tagRepository.findByNameContaining(tag);
+            List<Tag> tags = tagRepository.findByNameIgnoreCaseContaining(tag);
             List<Startup> startups = new ArrayList<>();
             for (Tag t: tags) {
                 startups = startupRepository.findByTags_Id(t.getId());

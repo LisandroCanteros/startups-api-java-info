@@ -25,7 +25,6 @@ public class UserOperation {
     private String password;
     @NotNull
     @JsonProperty(value = "user_type")
-    @Enumerated(EnumType.STRING)
     private UserType userType;
     @NotBlank
     @JsonProperty(value = "country_name")

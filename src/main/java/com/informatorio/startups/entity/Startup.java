@@ -21,12 +21,14 @@ public class Startup {
     private LocalDateTime creationDate;
     private BigDecimal goal;
     private Boolean published;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User owner;
     @OneToMany(mappedBy = "startup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageUrl> imageUrls = new ArrayList<>();
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Tag> tags = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User owner;
+    @OneToMany(mappedBy = "startup")
+    private List<Vote> votes = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -130,4 +132,23 @@ public class Startup {
     public List<Tag> getTags() {
         return tags;
     }
+
+    public void addVote(Vote vote){
+        votes.add(vote);
+        vote.setStartup(this);
+    }
+
+    public void removeVote(Vote vote){
+        votes.remove(vote);
+        vote.setStartup(null);
+    }
+
+    public List<Vote> getVotes(){
+        return votes;
+    }
+
+    public Integer getAmountVotes(){
+        return votes.size();
+    }
+
 }
