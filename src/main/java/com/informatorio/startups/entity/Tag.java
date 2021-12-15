@@ -16,6 +16,7 @@ public class Tag {
     @ManyToMany(mappedBy = "tags")
     private List<Startup> startupList = new ArrayList<>();
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }

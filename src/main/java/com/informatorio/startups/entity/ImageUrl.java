@@ -16,6 +16,7 @@ public class ImageUrl {
     @ManyToOne(fetch = FetchType.LAZY)
     private Startup startup;
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }

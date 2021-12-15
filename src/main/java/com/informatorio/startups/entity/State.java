@@ -23,6 +23,7 @@ public class State {
     @OneToMany(mappedBy = "state")
     private List<User> users;
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }

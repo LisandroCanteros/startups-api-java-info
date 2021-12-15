@@ -23,6 +23,7 @@ public class Country {
     @OneToMany(mappedBy = "country")
     private List<User> users;
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }
@@ -35,6 +36,7 @@ public class Country {
         this.name = name;
     }
 
+    @JsonIgnore
     public String getIso2() {
         return iso2;
     }

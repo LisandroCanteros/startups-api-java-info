@@ -1,5 +1,7 @@
 package com.informatorio.startups.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -143,6 +145,7 @@ public class Startup {
         vote.setStartup(null);
     }
 
+    @JsonIgnore
     public List<Vote> getVotes(){
         return votes;
     }
