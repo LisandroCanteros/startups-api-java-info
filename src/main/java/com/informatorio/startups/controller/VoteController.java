@@ -15,10 +15,6 @@ public class VoteController {
     public VoteController(VoteService voteService){
         this.voteService = voteService;
     }
-    @GetMapping(value = "/{userId}")
-    public ResponseEntity<?> getVotesFromUser(@PathVariable Long userId){
-        return new ResponseEntity(voteService.getVotesByUser(userId), HttpStatus.OK);
-    }
 
     @PostMapping()
     public ResponseEntity<?> createVote(@Valid @RequestBody VoteOperation voteOperation){

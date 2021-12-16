@@ -127,7 +127,6 @@ public class EventService {
     public String deleteEvent(Long eventId){
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found."));
-        eventRepository.delete(event);
         return "Event with ID: " + eventId + " deleted.";
     }
 }

@@ -1,15 +1,9 @@
 package com.informatorio.startups.service;
 
 import com.informatorio.startups.dto.UserOperation;
-import com.informatorio.startups.entity.City;
-import com.informatorio.startups.entity.Country;
-import com.informatorio.startups.entity.State;
-import com.informatorio.startups.entity.User;
+import com.informatorio.startups.entity.*;
 import com.informatorio.startups.exception.UserCreationException;
-import com.informatorio.startups.repository.CityRepository;
-import com.informatorio.startups.repository.CountryRepository;
-import com.informatorio.startups.repository.StateRepository;
-import com.informatorio.startups.repository.UserRepository;
+import com.informatorio.startups.repository.*;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -22,15 +16,18 @@ public class UserService {
     private final CountryRepository countryRepository;
     private final StateRepository stateRepository;
     private final CityRepository cityRepository;
+    private final VoteRepository voteRepository;
 
     public UserService(UserRepository userRepository,
                        CountryRepository countryRepository,
                        StateRepository stateRepository,
-                       CityRepository cityRepository){
+                       CityRepository cityRepository,
+                       VoteRepository voteRepository){
         this.userRepository = userRepository;
         this.countryRepository = countryRepository;
         this.stateRepository = stateRepository;
         this.cityRepository = cityRepository;
+        this.voteRepository = voteRepository;
     }
 
     public List<User> getUsers(LocalDate date, String countryName, String stateName, String cityName){
@@ -46,6 +43,13 @@ public class UserService {
     public User getById(Long userId){
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
+    public List<Vote> getVotes(Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found."));
+        List<Vote> votes = voteRepository.findByUser_Id(userId);
+        return votes;
     }
 
     public boolean validateLocation(Country country, State state, City city){

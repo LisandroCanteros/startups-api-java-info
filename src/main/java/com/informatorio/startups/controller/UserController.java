@@ -32,6 +32,11 @@ public class UserController {
         return new ResponseEntity(userService.getById(userId), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/{userId}/votes")
+    public ResponseEntity<?> getVotes(@PathVariable Long userId){
+        return new ResponseEntity(userService.getVotes(userId), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody UserOperation userOperation){
         return new ResponseEntity(userService.createUser(userOperation), HttpStatus.CREATED);

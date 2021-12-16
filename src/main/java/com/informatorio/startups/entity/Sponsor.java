@@ -1,5 +1,7 @@
 package com.informatorio.startups.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class Sponsor {
         this.name = name;
     }
 
+    @JsonIgnore
     public List<Event> getEvents() {
         return events;
     }

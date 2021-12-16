@@ -76,8 +76,16 @@ public class Vote {
         return creationDate;
     }
 
+    @JsonIgnore
     public Event getEvent() {
         return event;
+    }
+
+    public String getEventName(){
+        if (event == null){
+            return null;
+        }
+        return event.getName();
     }
 
     public void setEvent(Event event) {

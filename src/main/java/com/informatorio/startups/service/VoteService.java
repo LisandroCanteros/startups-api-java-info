@@ -31,23 +31,21 @@ public class VoteService {
         this.eventRepository= eventRepository;
     }
 
-    public List<Vote> getVotesByUser(Long userId){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found."));
-        List<Vote> votes = voteRepository.findByUser_Id(userId);
-        return votes;
-    }
-
     public Vote createVote(VoteOperation voteOperation){
         User user = userRepository.findById(voteOperation.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
         Startup startup = startupRepository.findById(voteOperation.getStartupId())
                 .orElseThrow(() -> new EntityNotFoundException("Startup not found."));
+        if (!startup.getPublished()){
+            throw new EntityNotFoundException("Startup not published.");
+        }
 
         List<Vote> userVotes = voteRepository.findByUser_Id(voteOperation.getUserId());
         for (Vote v : userVotes) {
             if (Objects.equals(v.getStartup().getId(), startup.getId()) && voteOperation.getEventId() != null
-            && Objects.equals(voteOperation.getEventId(), startup.getId())){
+            && Objects.equals(voteOperation.getEventId(), v.getEvent().getId())){
+                throw new DuplicateEntryException("This user has already voted for this startup.");
+            }else if (Objects.equals(v.getStartup().getId(), startup.getId()) && v.getEvent() == null){
                 throw new DuplicateEntryException("This user has already voted for this startup.");
             }
         }

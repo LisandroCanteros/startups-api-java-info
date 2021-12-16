@@ -41,15 +41,22 @@ public class StartupController {
         return new ResponseEntity(startupRepository.save(startup), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{startupId}")
+    @PostMapping(value = "/{startupId}")
     public ResponseEntity<?> addStartupToEvent(
             @PathVariable Long startupId,
             @Valid @RequestBody AddStartupToEventOperation addStartupToEventOperation){
-        Startup startup = startupRepository.findById(startupId)
-                .orElseThrow(() -> new EntityNotFoundException("Startup not found."));
-        Event event = eventRepository.findByName(addStartupToEventOperation.getName())
-                .orElseThrow(() -> new EntityNotFoundException("Event not found."));
-        startup.addEvent(event);
-        return new ResponseEntity(startupRepository.save(startup), HttpStatus.OK);
+        return new ResponseEntity(startupService.addStartupToEvent(startupId, addStartupToEventOperation),
+                HttpStatus.OK);
+    }
+    @PutMapping(value = "/{startupId}")
+    public ResponseEntity<?> updateStartup(
+            @PathVariable Long startupId,
+            @RequestBody StartupOperation startupOperation){
+        return new ResponseEntity(startupService.updateStartup(startupId, startupOperation), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{startupId}")
+    public ResponseEntity<?> deleteStartup(@PathVariable Long startupId){
+        return new ResponseEntity(startupService.deleteStartup(startupId), HttpStatus.OK);
     }
 }
