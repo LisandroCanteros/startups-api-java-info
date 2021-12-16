@@ -90,6 +90,16 @@ public class Event {
         return startups;
     }
 
+    public void addStartup(Startup startup){
+        startups.add(startup);
+        startup.getEvents().add(this);
+    }
+
+    public void removeStartup(Startup startup){
+        startups.remove(startup);
+        startup.getEvents().remove(this);
+    }
+
     public List<Sponsor> getSponsors() {
         return sponsors;
     }

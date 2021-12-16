@@ -30,4 +30,23 @@ public class EventController {
     public ResponseEntity<?> createEvent(@Valid @RequestBody EventOperation eventOperation){
         return new ResponseEntity<>(eventService.createEvent(eventOperation), HttpStatus.CREATED);
     }
+
+    @PutMapping(value = "/{eventId}")
+    public ResponseEntity<?> updateEvent(
+            @PathVariable Long eventId,
+            @RequestBody EventOperation eventOperation){
+        return new ResponseEntity<>(eventService.updateEvent(eventId, eventOperation), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/{eventId}/{startupId}")
+    public ResponseEntity<?> addStartup(
+            @PathVariable Long eventId,
+            @PathVariable Long startupId){
+        return new ResponseEntity<>(eventService.addStartup(eventId, startupId), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{eventId}")
+    public ResponseEntity<?> deleteEvent(@PathVariable Long eventId){
+        return new ResponseEntity<>(eventService.deleteEvent(eventId), HttpStatus.OK);
+    }
 }

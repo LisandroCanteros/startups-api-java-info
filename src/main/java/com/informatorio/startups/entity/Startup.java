@@ -26,7 +26,7 @@ public class Startup {
     private User owner;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Tag> tags = new ArrayList<>();
-    @OneToMany(mappedBy = "startup")
+    @OneToMany(mappedBy = "startup", cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();
     @OneToMany(mappedBy = "startup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageUrl> imageUrls = new ArrayList<>();

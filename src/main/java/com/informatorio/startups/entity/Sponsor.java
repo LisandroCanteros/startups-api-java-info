@@ -34,4 +34,5 @@ public class Sponsor {
     public List<Event> getEvents() {
         return events;
     }
+
 }
