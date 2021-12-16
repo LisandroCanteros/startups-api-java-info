@@ -2,10 +2,9 @@ package com.informatorio.startups.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.informatorio.startups.entity.UserType;
 
 import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.*;
 
 public class UserOperation {

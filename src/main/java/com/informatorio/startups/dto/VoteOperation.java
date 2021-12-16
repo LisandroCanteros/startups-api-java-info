@@ -1,9 +1,8 @@
 package com.informatorio.startups.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.informatorio.startups.entity.VotePlatform;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
 public class VoteOperation {
@@ -15,6 +14,8 @@ public class VoteOperation {
     @NotNull
     @JsonProperty(value = "startup_id")
     private Long startupId;
+    @JsonProperty(value = "event_id")
+    private Long eventId;
 
     public VotePlatform getPlatform() {
         return platform;
@@ -38,5 +39,13 @@ public class VoteOperation {
 
     public void setStartupId(Long startupId) {
         this.startupId = startupId;
+    }
+
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 }

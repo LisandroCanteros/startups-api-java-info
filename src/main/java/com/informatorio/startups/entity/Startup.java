@@ -1,7 +1,6 @@
 package com.informatorio.startups.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -23,14 +22,17 @@ public class Startup {
     private LocalDateTime creationDate;
     private BigDecimal goal;
     private Boolean published;
-    @OneToMany(mappedBy = "startup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ImageUrl> imageUrls = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Tag> tags = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Tag> tags = new ArrayList<>();
     @OneToMany(mappedBy = "startup")
     private List<Vote> votes = new ArrayList<>();
+    @OneToMany(mappedBy = "startup", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageUrl> imageUrls = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Event> events = new ArrayList<>();
+
 
     @Override
     public String toString() {
@@ -100,6 +102,7 @@ public class Startup {
         this.published = published;
     }
 
+    @JsonIgnore
     public User getOwner() {
         return owner;
     }
@@ -150,8 +153,30 @@ public class Startup {
         return votes;
     }
 
-    public Integer getAmountVotes(){
-        return votes.size();
+    public void addEvent(Event event){
+        events.add(event);
+        event.getStartups().add(this);
     }
 
+    public void removeEvent(Event event){
+        events.remove(event);
+    }
+
+    @JsonIgnore
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public List<String> getEventNames(){
+        List<String> eventNames = new ArrayList<>();
+        this.getEvents().stream()
+                .forEach(event -> eventNames.add(event.getName()));
+        return eventNames;
+    }
+
+    public long getAmountVotes(){
+        return votes.stream()
+                .filter(vote -> vote.getEvent() == null)
+                .count();
+    }
 }

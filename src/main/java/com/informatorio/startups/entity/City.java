@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,7 +17,7 @@ public class City {
     @ManyToOne(fetch = FetchType.LAZY)
     private State state;
     @OneToMany(mappedBy = "city")
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     @Override
     public String toString() {

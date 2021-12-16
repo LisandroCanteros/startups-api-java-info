@@ -1,4 +1,4 @@
-package com.informatorio.startups.dto;
+package com.informatorio.startups.entity;
 
 public enum UserType {
     USER,

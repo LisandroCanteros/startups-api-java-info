@@ -5,6 +5,7 @@ import com.informatorio.startups.entity.Startup;
 import com.informatorio.startups.entity.Tag;
 import com.informatorio.startups.entity.User;
 import com.informatorio.startups.exception.DuplicateEntryException;
+import com.informatorio.startups.repository.EventRepository;
 import com.informatorio.startups.repository.StartupRepository;
 import com.informatorio.startups.repository.TagRepository;
 import com.informatorio.startups.repository.UserRepository;
@@ -19,12 +20,14 @@ public class StartupService {
     private final StartupRepository startupRepository;
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
+    private final EventRepository eventRepository;
 
     public StartupService(StartupRepository startupRepository, UserRepository userRepository,
-                          TagRepository tagRepository) {
+                          TagRepository tagRepository, EventRepository eventRepository) {
         this.startupRepository = startupRepository;
         this.userRepository = userRepository;
         this.tagRepository = tagRepository;
+        this.eventRepository = eventRepository;
     }
 
     public List<Startup> getStartupsBy(Boolean published, String tag){

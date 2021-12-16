@@ -1,7 +1,6 @@
 package com.informatorio.startups.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.informatorio.startups.dto.VotePlatform;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -20,6 +19,8 @@ public class Vote {
     private User user;
     @ManyToOne(fetch = FetchType.LAZY)
     private Startup startup;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Event event;
 
     @Override
     public String toString() {
@@ -74,5 +75,14 @@ public class Vote {
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
 
 }

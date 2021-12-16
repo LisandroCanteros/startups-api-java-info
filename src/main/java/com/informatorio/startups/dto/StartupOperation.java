@@ -33,6 +33,8 @@ public class StartupOperation {
     @JsonProperty(value = "images_url")
     private List<ImageUrl> imagesUrl = new ArrayList<>();
     private List<Tag> tags = new ArrayList<>();
+    @JsonProperty(value = "events_name")
+    private List<String> eventsName = new ArrayList<>();
 
     public String getBody() {
         return body;
@@ -84,5 +86,9 @@ public class StartupOperation {
 
     public List<Tag> getTags() {
         return tags;
+    }
+
+    public List<String> getEventsName() {
+        return eventsName;
     }
 }
