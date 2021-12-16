@@ -13,6 +13,7 @@ import com.informatorio.startups.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -32,6 +33,21 @@ public class UserService {
         this.cityRepository = cityRepository;
     }
 
+    public List<User> getUsers(LocalDate date, String countryName, String stateName, String cityName){
+        if (date != null){
+            return userRepository.findByCreationDateAfter(date.atStartOfDay());
+        }
+        if (countryName != null || stateName != null || cityName != null) {
+            return getUsersFrom(countryName, stateName, cityName);
+        }
+        return userRepository.findAll();
+    }
+
+    public User getById(Long userId){
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
     public boolean validateLocation(Country country, State state, City city){
         List<State> states = country.getStates();
         List<City> cities = state.getCities();
@@ -41,10 +57,39 @@ public class UserService {
         throw new EntityNotFoundException("Invalid location.");
     }
 
+    public List<User> getUsersFrom(String countryName, String stateName, String cityName){
+        if (countryName == null){
+            throw new EntityNotFoundException("Country not found.");
+        }
+        if (stateName != null && cityName != null){
+            Country country = countryRepository.findByName(countryName)
+                    .orElseThrow(()-> new EntityNotFoundException("Country not found."));
+            State state = stateRepository.findByName(stateName)
+                    .orElseThrow(() -> new EntityNotFoundException("State not found."));
+            City city = cityRepository.findByName(cityName)
+                    .orElseThrow(() -> new EntityNotFoundException("City not found."));
+            if (validateLocation(country, state, city)) {
+                return userRepository.findByCountry_IdAndState_IdAndCity_Id(
+                        country.getId(), state.getId(), city.getId());
+            }
+        }else if (stateName != null){
+            Country country = countryRepository.findByName(countryName)
+                    .orElseThrow(()-> new EntityNotFoundException("Country not found."));
+            State state = stateRepository.findByName(stateName)
+                    .orElseThrow(() -> new EntityNotFoundException("State not found."));
+            return userRepository.findByCountry_IdAndState_Id(country.getId(),state.getId());
+        }else if (cityName == null){
+            Country country = countryRepository.findByName(countryName)
+                    .orElseThrow(()-> new EntityNotFoundException("Country not found."));
+            return userRepository.findByCountry_Id(country.getId());
+        }
+        throw new EntityNotFoundException("Invalid location.");
+    }
+
     public User createUser(UserOperation userOperation){
         Country country = countryRepository.findByName(userOperation.getCountryName())
                 .orElseThrow(() -> new EntityNotFoundException("Country not found."));
-        State state = stateRepository.findStateByName(userOperation.getStateName())
+        State state = stateRepository.findByName(userOperation.getStateName())
                 .orElseThrow(() -> new EntityNotFoundException("State not found."));
         City city = cityRepository.findByName(userOperation.getCityName())
                 .orElseThrow(() -> new EntityNotFoundException("City not found"));
@@ -59,40 +104,45 @@ public class UserService {
             user.setCountry(country);
             user.setState(state);
             user.setCity(city);
+            userRepository.save(user);
             return user;
         }
         throw new UserCreationException("Invalid data.");
     }
 
-    public List<User> getUsersFrom(String countryName, String stateName, String cityName){
-        if (countryName == null){
-            throw new EntityNotFoundException("Country not found.");
+    public User updateUser(Long userId, UserOperation userOperation){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found."));
+        if (userOperation.getFirstName() != null && !userOperation.getFirstName().isBlank()){
+            user.setFirstName(userOperation.getFirstName());
         }
-        if (stateName != null && cityName != null){
-            Country country = countryRepository.findByName(countryName)
-                    .orElseThrow(()-> new EntityNotFoundException("Country not found."));
-            State state = stateRepository.findStateByName(stateName)
-                    .orElseThrow(() -> new EntityNotFoundException("State not found."));
-            City city = cityRepository.findByName(cityName)
-                    .orElseThrow(() -> new EntityNotFoundException("City not found."));
-            if (validateLocation(country, state, city)) {
-                List<User> users = userRepository.findByCountry_IdAndState_IdAndCity_Id(
-                        country.getId(), state.getId(), city.getId());
-                return users;
-            }
-        }else if (stateName != null && cityName == null){
-            Country country = countryRepository.findByName(countryName)
-                    .orElseThrow(()-> new EntityNotFoundException("Country not found."));
-            State state = stateRepository.findStateByName(stateName)
-                    .orElseThrow(() -> new EntityNotFoundException("State not found."));
-            List<User> users = userRepository.findByCountry_IdAndState_Id(country.getId(),state.getId());
-            return users;
-        }else if (stateName == null  && cityName == null){
-            Country country = countryRepository.findByName(countryName)
-                    .orElseThrow(()-> new EntityNotFoundException("Country not found."));
-            List<User> users = userRepository.findByCountry_Id(country.getId());
-            return users;
+        if (userOperation.getLastName() != null && !userOperation.getLastName().isBlank()){
+            user.setLastName(userOperation.getLastName());
         }
-        throw new EntityNotFoundException("Invalid location.");
+        if (userOperation.getPassword() != null && !userOperation.getPassword().isBlank()){
+            user.setPassword(userOperation.getPassword());
+        }
+        if (userOperation.getUserType() != null){
+            user.setUserType(userOperation.getUserType());
+        }
+        City city = cityRepository.findByName(userOperation.getCityName())
+                .orElse(user.getCity());
+        State state = stateRepository.findByName(userOperation.getStateName())
+                .orElse(user.getState());
+        Country country = countryRepository.findByName(userOperation.getCountryName())
+                .orElse(user.getCountry());
+        user.setCity(city);
+        user.setState(state);
+        user.setCountry(country);
+        validateLocation(user.getCountry(), user.getState(), user.getCity());
+        userRepository.save(user);
+        return user;
+    }
+
+    public String deleteUser(Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        userRepository.delete(user);
+        return "User " + user.getId() + " deleted.";
     }
 }

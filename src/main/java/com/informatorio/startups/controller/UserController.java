@@ -1,26 +1,20 @@
 package com.informatorio.startups.controller;
 
 import com.informatorio.startups.dto.UserOperation;
-import com.informatorio.startups.entity.User;
-import com.informatorio.startups.repository.UserRepository;
 import com.informatorio.startups.service.UserService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
-    private final UserRepository userRepository;
     private final UserService userService;
 
-    public UserController(UserRepository userRepository, UserService userService){
-        this.userRepository = userRepository;
+    public UserController(UserService userService){
         this.userService = userService;
     }
 
@@ -30,27 +24,29 @@ public class UserController {
             @RequestParam(required = false) String countryName,
             @RequestParam(required = false) String stateName,
             @RequestParam(required = false) String cityName){
-        if (date != null){
-            List<User> users = userRepository.findByCreationDateAfter(date.atStartOfDay());
-            return new ResponseEntity(users, HttpStatus.OK);
-        }
-        if (countryName != null || stateName != null || cityName != null) {
-            List<User> users = userService.getUsersFrom(countryName, stateName, cityName);
-            return new ResponseEntity(users, HttpStatus.OK);
-        }
-        return new ResponseEntity(userRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity(userService.getUsers(date, countryName,stateName,cityName), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable Long userId){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return new ResponseEntity(userRepository.findById(userId), HttpStatus.OK);
+        return new ResponseEntity(userService.getById(userId), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody UserOperation userOperation){
-        User user = userService.createUser(userOperation);
-        return new ResponseEntity(userRepository.save(user), HttpStatus.CREATED);
+        return new ResponseEntity(userService.createUser(userOperation), HttpStatus.CREATED);
     }
+
+    @PutMapping(value = "/{userId}")
+    public ResponseEntity<?> updateUser(
+            @PathVariable Long userId,
+            @RequestBody UserOperation userOperation){
+        return new ResponseEntity(userService.updateUser(userId, userOperation), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId){
+        return new ResponseEntity(userService.deleteUser(userId), HttpStatus.OK);
+    }
+
 }
