@@ -47,6 +47,7 @@ Note: getting the event by ID will return its information and a list of startups
 ### POST
 * Create 
   * Required fields {"user_id": "id", "startup_id": "id", "event_id": "id", "platform": "WEB/SERVICE/MOBILE"}.
+
 Note: "event_id" is optional. When not included, votes are added to a list that does not count towards any future events. All startups start with 0 votes when joining an event.
 
 Check postman collection.
