@@ -1,7 +1,8 @@
 # Supported operations
 ## User /api/v1/user
 ### POST
-* Create - Required fields {first_name, last_name, email, password, user_type (USER/OWNER/COLLABORATOR), country_name, state_name, city_name}
+* Create 
+  * Required fields {first_name, last_name, email, password, user_type (USER/OWNER/COLLABORATOR), country_name, state_name, city_name}
 ### PUT
 * Update /{id} - Any of the fields above except email.
 ### DELETE
@@ -30,7 +31,8 @@ Note: when getting all startups, the amount of votes showed does not count towar
 
 ## Event api/v1/event
 ### POST
-* Create - Required fields {name, description, end_date (LocalDateTime), "prizepool"}
+* Create 
+  * Required fields {name, description, end_date (LocalDateTime), prizepool}
 * Add startup /{eventId}/{startupId}
 ### PUT
 * Update /{id}
@@ -43,7 +45,8 @@ Note: getting the event by ID will return its information and a list of startups
 
 ## Vote /api/v1/vote
 ### POST
-* Create - Required fields {"user_id": "id", "startup_id": "id", "event_id": "id", "platform": "WEB/SERVICE/MOBILE"}.
+* Create 
+  * Required fields {"user_id": "id", "startup_id": "id", "event_id": "id", "platform": "WEB/SERVICE/MOBILE"}.
 Note: "event_id" is optional. When not included, votes are added to a list that does not count towards any future events. All startups start with 0 votes when joining an event.
 
 Check postman collection.
