@@ -41,6 +41,7 @@ Note: when getting all startups, the amount of votes showed does not count towar
 ## GET
 * Get all
 * Get by ID /{id}
+
 Note: getting the event by ID will return its information and a list of startups registered in the event. This list is sorted (DESC) by the amount of votes each startup has earned in the event.
 
 ## Vote /api/v1/vote
